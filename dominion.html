@@ -8,8 +8,8 @@
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <!-- Latest compiled and minified JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 
@@ -21,14 +21,18 @@
 </head>
 <body>
   <script>
-  $(document).ready(function(){
-    var game = new Game
-    game.init()
-  });
+    $(document).ready(function(){
+      var game = new Game
+      game.init()
+    });
   </script>
 
   <div class="container">
     <div class="page-header">
+      <button id="play" type="button" class="btn btn-primary pull-right">
+      <span class="glyphicon glyphicon-refresh"></span>
+      play!
+      </button>
       <h1>dominion simulation</h1>
     </div>
     <div class="row">
