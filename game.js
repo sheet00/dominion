@@ -12,10 +12,13 @@
       var gold = Number($("#gold").val());
       var etc = Number($("#etc").val());
 
+      var total = copper + (silver * 2) + (gold * 3);
+      $("#total-money").html(total + " money")
+
       var score = [];
 
       var game = new Game(copper,silver,gold,etc);
-      for (var i = 1; i <= 20; i++){
+      for (var i = 1; i <= 15; i++){
         var result = game.start(i);
         score.push(result);
       }
