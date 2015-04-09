@@ -11,8 +11,10 @@
       var silver = Number($("#silver").val());
       var gold = Number($("#gold").val());
       var etc = Number($("#etc").val());
+
       var game = new Game(copper,silver,gold,etc);
-      game.start();
+      game.start(5);
+
       $(this).blur();
     };
 
@@ -26,14 +28,14 @@
 
   };
 
-  Game.prototype.start = function(){
+  Game.prototype.start = function(province_turn){
     console.clear();
 
     var deck = new Deck(this.copper,this.silver,this.gold,this.etc)
 
     var turn = 1
 
-    for (var i = 0; i <= 10; i++) {
+    for (var i = 0; i < 10; i++) {
       console.log("turn[" + turn +"]--------------------------")
 
       deck.shuffle();
@@ -41,7 +43,15 @@
 
       deck.inspect();
 
-      deck.buy_money();
+      var card = null;
+      if (province_turn <= turn){
+        card = deck.buy_money();
+      }else{
+        card = deck.buy_province();
+      }
+      console.log("buy_card:" + card.name )
+      deck.yard.push(card);
+
       deck.list_to_trash();
 
       turn += 1
@@ -98,6 +108,11 @@ Deck.prototype.pull = function(){
   }
 }
 
+
+Deck.prototype.buy_card(turn,province_turn) = function(){
+
+}
+
 Deck.prototype.buy_money = function(){
   var money = this.sum_list();
   var card = null;
@@ -114,9 +129,21 @@ Deck.prototype.buy_money = function(){
     card = new Card("etc");
     break;
   }
-  console.log("buy_card:" + card.name )
-  this.yard.push(card);
+
+  return card;
 };
+
+Deck.prototype.buy_province = function(){
+  var money = this.sum_list();
+  var card = null;
+  if (8 <= money ){
+    card = new Card("province")
+  }else{
+    card = this.buy_money();
+  };
+
+  return card;
+}
 
 Deck.prototype.list_to_trash = function(){
   this.trash = this.trash.concat(this.list)
