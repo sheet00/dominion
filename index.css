@@ -1,10 +1,13 @@
 .container{
-  margin-top: 70px;
-  margin-left:auto;
-  margin-right:auto;
+	margin-left:auto;
+	margin-right:auto;
 	width :80%;
-  font-size: 300%;
+	font-size: 200%;
 }
 
 select.form-control{
+}
+
+#log{
+	font-size: 15px;
 }
