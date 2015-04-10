@@ -37,6 +37,15 @@
       exec();
     });
 
+    $("#reset").on("click",function(){
+      $("#copper").val(7);
+      $("#silver").val(0);
+      $("#gold").val(0);
+      $("#etc").val(3);
+      $("#total-money").html(null);
+      $("#log tbody").html(null);
+    });
+
   };
 
   Game.prototype.start = function(province_turn){
