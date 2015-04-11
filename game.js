@@ -5,11 +5,17 @@
       var copper = Number($("#copper").val());
       var silver = Number($("#silver").val());
       var gold = Number($("#gold").val());
-      var etc = Number($("#etc").val());
-      var province_count = Number($("#province_count").val());
 
-      var total = copper + (silver * 2) + (gold * 3);
-      $("#all-money").html(total + " money")
+      //合計金額
+      var all_money = copper + (silver * 2) + (gold * 3);
+      $("#all-money").html(all_money + " money");
+
+      //総カード枚数
+      var total_card_count = 0;
+      $(".card").each(function(){
+        total_card_count += Number($(this).val());
+      });
+      $("#all-cards").html(total_card_count + " cards");
 
       var score = [];
 
@@ -29,19 +35,22 @@
     });
 
     $("#play").on("click",function(){
-      $(this).blur();
       exec();
+      $(this).blur();
     });
 
     $("#reset").on("click",function(){
-      $(this).blur();
+      var do_reset = confirm("reset??");
+      if (do_reset){
+        $("#copper").val(7);
+        $("#silver").val(0);
+        $("#gold").val(0);
+        $("#etc").val(3);
+        $("#all-money").html(null);
+        $("#log tbody").html(null);
+      }
 
-      $("#copper").val(7);
-      $("#silver").val(0);
-      $("#gold").val(0);
-      $("#etc").val(3);
-      $("#all-money").html(null);
-      $("#log tbody").html(null);
+      $(this).blur();
     });
 
   };
@@ -158,26 +167,26 @@ Deck = function(){
 
   this.yard = temp_yard;
 
-Deck.prototype.shuffle = function(){
-  var n = this.yard.length;
-  for(var i = n - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = this.yard[i];
-    this.yard[i] = this.yard[j];
-    this.yard[j] = tmp;
-  }
-}
-
-Deck.prototype.pull = function(){
-  for (var i = 0; i < 5; i++) {
-    if (this.yard.length == 0){
-      this.yard = this.yard.concat(this.trash);
-      this.trash = [];
-      this.shuffle();
+  Deck.prototype.shuffle = function(){
+    var n = this.yard.length;
+    for(var i = n - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = this.yard[i];
+      this.yard[i] = this.yard[j];
+      this.yard[j] = tmp;
     }
-    this.list.push(this.yard.shift());
   }
-}
+
+  Deck.prototype.pull = function(){
+    for (var i = 0; i < 5; i++) {
+      if (this.yard.length == 0){
+        this.yard = this.yard.concat(this.trash);
+        this.trash = [];
+        this.shuffle();
+      }
+      this.list.push(this.yard.shift());
+    }
+  }
 
 
 //ターン数によって金貨or属州に分岐

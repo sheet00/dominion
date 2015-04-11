@@ -1,13 +1,9 @@
 .container{
 	margin-left:auto;
 	margin-right:auto;
-	width :80%;
-	font-size: 200%;
+	width :90%;
+	font-size: 150%;
 }
 
 select.form-control{
-}
-
-#log{
-	font-size: 15px;
 }
