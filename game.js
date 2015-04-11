@@ -1,9 +1,4 @@
-﻿Game = function(copper,silver,gold,etc){
-
-  this.copper = copper;
-  this.silver = silver;
-  this.gold = gold;
-  this.etc = etc;
+﻿Game = function(){
 
   Game.prototype.init = function(){
     var exec = function(){
@@ -11,14 +6,15 @@
       var silver = Number($("#silver").val());
       var gold = Number($("#gold").val());
       var etc = Number($("#etc").val());
+      var province_count = Number($("#province_count").val());
 
       var total = copper + (silver * 2) + (gold * 3);
-      $("#total-money").html(total + " money")
+      $("#all-money").html(total + " money")
 
       var score = [];
 
-      var game = new Game(copper,silver,gold,etc);
-      for (var i = 1; i <= 15; i++){
+      var game = new Game();
+      for (var i = 1; i <= 10; i++){
         var result = game.start(i);
         score.push(result);
       }
@@ -38,11 +34,13 @@
     });
 
     $("#reset").on("click",function(){
+      $(this).blur();
+
       $("#copper").val(7);
       $("#silver").val(0);
       $("#gold").val(0);
       $("#etc").val(3);
-      $("#total-money").html(null);
+      $("#all-money").html(null);
       $("#log tbody").html(null);
     });
 
@@ -51,11 +49,11 @@
   Game.prototype.start = function(province_turn){
 
     results = [];
-    exec_turn = 1000; //実行回数
+    exec_turn = 100; //実行回数
 
     for (var i = 0; i < exec_turn; i++){
       var turn = 1
-      var deck = new Deck(this.copper,this.silver,this.gold,this.etc)
+      var deck = new Deck();
       deck.shuffle();
 
       while (0 < deck.province_count ) {
@@ -128,56 +126,67 @@ Game.prototype.sort = function(score){
 
 
 
-Deck = function(num_copper,num_silver,num_gold,num_etc){
+Deck = function(){
+
   this.list = []; //手札
   this.yard = []; //山札
   this.trash = []; //捨札
-  this.province_count = 4 //必要属州枚数 12/3人 = 4枚持っていれば引き分け
+  this.province_count = Number($("#province_count").val()); //必要属州枚数
   this.first_province_money = 0 //属州1枚目取得時の合計金額
 
-  if (num_copper + num_silver + num_gold + num_etc < 5){
+  //事前検証
+  var $cards = $(".card");
+  var total_card_count = 0;
+  $cards.each(function(){
+    total_card_count += Number($(this).val());
+  });
+
+  if (total_card_count < 5){
     alert("5枚ないよ！");
     throw new Error("under 5cards");
   }
 
-  var setup = {copper: num_copper, silver: num_silver,gold: num_gold,etc: num_etc};
-  for (var key in setup) {
-    count = setup[key];
-    for (var i = 0; i < count; i++) {
-      var card = new Card(key);
-      this.yard.push(card);
+  var temp_yard = [];
+  $cards.each(function(){
+    var name = $(this).attr("id");
+    var count = $(this).val();
+    for (var i = 0; i < count; i++){
+      var card = new Card(name);
+      temp_yard.push(card);
     }
-  }
+  });
 
-  Deck.prototype.shuffle = function(){
-    var n = this.yard.length;
-    for(var i = n - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = this.yard[i];
-      this.yard[i] = this.yard[j];
-      this.yard[j] = tmp;
-    }
-  }
+  this.yard = temp_yard;
 
-  Deck.prototype.pull = function(){
-    for (var i = 0; i < 5; i++) {
-      if (this.yard.length == 0){
-        this.yard = this.yard.concat(this.trash);
-        this.trash = [];
-        this.shuffle();
-      }
-      this.list.push(this.yard.shift());
-    }
+Deck.prototype.shuffle = function(){
+  var n = this.yard.length;
+  for(var i = n - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = this.yard[i];
+    this.yard[i] = this.yard[j];
+    this.yard[j] = tmp;
   }
+}
+
+Deck.prototype.pull = function(){
+  for (var i = 0; i < 5; i++) {
+    if (this.yard.length == 0){
+      this.yard = this.yard.concat(this.trash);
+      this.trash = [];
+      this.shuffle();
+    }
+    this.list.push(this.yard.shift());
+  }
+}
 
 
 //ターン数によって金貨or属州に分岐
 Deck.prototype.buy_card = function(turn,province_turn){
   var card = null;
-  if (turn <= province_turn){
-    card = this._buy_money();
-  }else{
+  if (province_turn <= turn){
     card = this._buy_province();
+  }else{
+    card = this._buy_money();
   }
 
   //console.log("buy_card:" + card.name )
