@@ -47,6 +47,7 @@
         $("#gold").val(0);
         $("#etc").val(3);
         $("#all-money").html(null);
+        $("#all-cards").html(null);
         $("#log tbody").html(null);
       }
 
